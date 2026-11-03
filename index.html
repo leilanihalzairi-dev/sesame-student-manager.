@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sésame d’esprit</title>
+<meta name="theme-color" content="#6037b7">
+<meta name="description" content="Sésame d’esprit student, group, attendance and finance manager">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f5f3fa;--card:#fff;--tx:#282235;--mu:#777184;--ac:#673ab7;--bd:#e8e1f2;--ok:#239b69;--bad:#d94b62;--side:#6037b7;--side2:#7448ce}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px system-ui,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--bd)}
+h1{font-size:18px;margin:0}.mu{color:var(--mu);font-size:13px}
+body{background:var(--bg)}
+header{min-height:68px;box-shadow:0 2px 12px rgba(40,20,70,.05)}
+#apptitle{color:var(--side);font-weight:800;letter-spacing:.1px}
+nav{background:var(--side);padding:14px 16px;gap:8px;box-shadow:0 4px 14px rgba(65,35,125,.12)}
+nav button{background:transparent;border-color:rgba(255,255,255,.25);color:#fff;border-radius:10px;padding:10px 16px}
+nav button.on{background:#fff;color:var(--side);border-color:#fff;box-shadow:0 3px 10px rgba(20,10,40,.12)}
+main{padding:18px 20px 42px;background:var(--bg)}
+.card{box-shadow:0 3px 14px rgba(45,25,80,.055);border-color:#ece7f4;border-radius:14px}
+button.pri{background:var(--side);border-radius:9px}button.pri:hover{background:var(--side2)}
+button.sec{border-color:#d8c9f0;color:var(--side);border-radius:9px}
+button.lnk{color:var(--side)}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=time],input[type=number],select{background:#fff;border-color:#e5deef}
+.admin-welcome{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.admin-welcome p{margin:5px 0 0;color:var(--mu);font-size:13px}
+.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.admin-stat{padding:16px;background:var(--card);border:1px solid var(--bd);border-radius:14px;box-shadow:0 3px 14px rgba(45,25,80,.045);min-width:0}
+.admin-stat .stat-label{color:var(--mu);font-size:13px}.admin-stat .stat-value{font-size:27px;font-weight:800;color:var(--side);margin-top:5px}
+.admin-lower{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr);gap:14px;align-items:start}
+.admin-panel-title{font-size:16px;font-weight:750;margin:0 0 12px}
+.quick-actions{display:flex;flex-wrap:wrap;gap:8px}
+.progress-line{height:9px;background:#eee8f8;border-radius:99px;overflow:hidden;margin:8px 0 14px}.progress-line span{display:block;height:100%;background:var(--side);border-radius:99px}
+.dashboard-list{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}.dashboard-list:last-child{border-bottom:0}
+@media(max-width:800px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-lower{grid-template-columns:1fr}}
+
+nav{display:flex;align-items:center;justify-content:flex-start;gap:8px;overflow-x:auto;padding:12px 16px;width:100%;margin:0;flex-wrap:wrap}
+nav button{white-space:nowrap;flex:0 0 auto;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 16px;border-radius:10px;font-size:14px;cursor:pointer;transition:background .15s,border-color .15s}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{padding:8px 16px 40px;width:100%;max-width:none;margin:0;text-align:left}
+main > .row, main > .card, main > .mu{width:100%;max-width:1100px;margin-left:0;margin-right:auto}
+main > .row{justify-content:flex-start}
+main .row button{flex:0 0 auto}
+.card{box-shadow:0 2px 8px rgba(0,0,0,.025)}
+button{cursor:pointer}
+@media(max-width:600px){header{align-items:flex-start;flex-wrap:wrap}nav{flex-wrap:nowrap;padding:10px 12px}main{padding:8px 12px 32px}.row input,.row select{min-width:0;flex:1 1 100%}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=time],input[type=number],select{flex:1;min-width:120px;width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:15px}
+.row input,.row select{width:auto}
+select.lg{min-width:0;width:auto;flex:none;padding:6px}
+button.pri{background:var(--ac);color:#fff;border:0;padding:10px 16px;border-radius:8px;font-size:15px}button:disabled{opacity:.65;cursor:wait}
+button.sec{background:none;border:1px solid var(--bd);color:var(--tx);padding:10px 16px;border-radius:8px;font-size:15px}
+button.lnk{background:none;border:0;color:var(--ac);font-size:14px}
+button.ic{background:none;border:0;font-size:19px;padding:4px 8px;color:var(--mu)}button.ic.d{color:var(--bad)}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--bd)}
+.item:last-child{border:0}.ok{color:var(--ok)}.bad{color:var(--bad)}.err{color:var(--bad);font-size:14px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;border:1px solid var(--bd);margin-inline-end:4px}
+#login{max-width:340px;margin:10vh auto;padding:0 16px}
+.hide,#modal.hide{display:none!important}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+#sheet{background:var(--card);width:100%;max-width:520px;max-height:90vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px}
+label.f{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}
+.chk{display:flex;align-items:center;gap:8px;margin:6px 0}
+input[type=tel],input[type=month],input[type=search]{flex:1;min-width:120px;width:100%;padding:10px;border:1px solid #e5deef;border-radius:8px;background:#fff;color:var(--tx);font-size:15px}
+.row input[type=tel],.row input[type=month],.row input[type=search]{width:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}.tbl th,.tbl td{padding:8px 6px;border-bottom:1px solid var(--bd);text-align:start}.tbl th{color:var(--mu);font-weight:600;font-size:12px}
+.scrollx{overflow-x:auto}
+.fin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+@media(max-width:600px){.fin-grid{grid-template-columns:1fr}}
+.onlyprint{display:none}
+@media print{header,nav,.noprint,#modal,#login{display:none!important}.onlyprint{display:block}body,main{background:#fff!important}main{padding:0!important}.card,.admin-stat{box-shadow:none!important}}
+
+/* ===== dashboard layout: sidebar + top bar (colors unchanged) ===== */
+#app{display:flex;gap:18px;padding:18px;min-height:100vh;align-items:flex-start;background:var(--bg)}
+#side{width:250px;flex:none;position:sticky;top:18px;background:var(--side);border-radius:22px;padding:18px 12px;box-shadow:0 8px 24px rgba(65,35,125,.2);max-height:calc(100vh - 36px);overflow:auto}
+#side .brand{display:flex;align-items:center;gap:10px;padding:4px 10px 16px}
+#side .brand .logo{font-size:22px;background:rgba(255,255,255,.18);width:40px;height:40px;border-radius:13px;display:grid;place-items:center;flex:none}
+#side #apptitle{color:#fff;font-size:17px;line-height:1.2;margin:0;font-weight:800}
+#app #nav{display:flex;flex-direction:column;flex-wrap:nowrap;gap:4px;background:none;box-shadow:none;padding:0;width:auto;overflow:visible}
+#app #nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:transparent;border:0;color:rgba(255,255,255,.92);padding:11px 14px;border-radius:14px;font-size:14.5px;box-shadow:none}
+#app #nav button .ni{width:22px;text-align:center;flex:none}
+#app #nav button:hover{background:rgba(255,255,255,.14)}
+#app #nav button.on{background:#fff;color:var(--side);font-weight:700;box-shadow:0 4px 12px rgba(20,10,40,.16)}
+#content{flex:1;min-width:0}
+#content header{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px 18px;margin-bottom:16px;min-height:64px;box-shadow:0 3px 14px rgba(45,25,80,.05)}
+#pagetitle{font-size:20px;margin:0;color:var(--tx)}
+#content main{padding:0 0 40px;max-width:none;margin:0;width:100%}
+#content main>.row,#content main>.card,#content main>.mu,#content main>.fin-grid{max-width:none}
+.card{border-radius:18px}
+.admin-stat{position:relative;border-radius:18px}
+.ico{position:absolute;top:14px;inset-inline-end:14px;width:42px;height:42px;border-radius:50%;background:#ede7f7;display:grid;place-items:center;font-size:19px}
+.item{border-radius:10px}
+@media(max-width:800px){
+ #app{flex-direction:column;padding:10px;gap:10px}
+ #side{width:100%;position:static;max-height:none;border-radius:18px;padding:10px}
+ #side .brand{padding:2px 6px 10px}
+ #app #nav{flex-direction:row;overflow-x:auto}
+ #app #nav button{width:auto;white-space:nowrap;flex:none}
+ #pagetitle{font-size:17px}
+}
+
+.global-search-wrap{position:relative;flex:1;max-width:360px;min-width:180px}
+#globalSearch{width:100%;min-width:0;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:#fff}
+#globalResults{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:20;background:#fff;border:1px solid var(--bd);border-radius:14px;box-shadow:0 16px 36px rgba(30,40,70,.16);max-height:60vh;overflow:auto;padding:8px}
+.global-filters{display:flex;gap:6px;overflow-x:auto;padding:3px 1px 9px;scrollbar-width:thin}.global-filter{flex:0 0 auto;border:1px solid #e0e7f2;background:#f8fafc;color:#475467;border-radius:999px;padding:7px 11px;font-size:12px}.global-filter.on{background:#eef2ff;border-color:#a5b4fc;color:#4338ca}.global-result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.global-result{min-width:0;border:1px solid #edf0f5;border-radius:10px!important;padding:11px!important;white-space:normal}.global-result:hover{background:#f8faff}@media(max-width:480px){.global-result-grid{grid-template-columns:1fr}}
+.global-result{display:block;width:100%;text-align:left;padding:10px 12px;background:#fff;border:0;border-bottom:1px solid var(--bd);color:var(--tx)}
+.global-result:hover{background:#f5f0fc}
+.tbl-wrap{width:100%;overflow-x:auto}
+.tbl{min-width:680px}.tbl td{vertical-align:top}
+.att-actions{display:flex;gap:6px;white-space:nowrap}
+.att-actions button{border:1px solid var(--bd);border-radius:8px;padding:7px 10px;background:#fff}
+.att-actions button.selected-present{background:#e6f7ef;border-color:#239b69;color:#16734c;font-weight:700}
+.att-actions button.selected-absent{background:#fff0f2;border-color:#d94b62;color:#b62c43;font-weight:700}
+@media print{
+  body *{visibility:hidden!important}
+  #printArea,#printArea *{visibility:visible!important}
+  #printArea{position:absolute;left:0;top:0;width:100%;padding:0!important;margin:0!important}
+  #printArea .noprint,.noprint{display:none!important}
+  #printArea .card{border:0!important;box-shadow:none!important;padding:0!important}
+  #printArea .tbl{width:100%;min-width:0;font-size:10pt}
+  #printArea .tbl th,#printArea .tbl td{padding:6px;border:1px solid #bbb}
+  #side,#content header,#login,.onlyprint{display:none!important}
+}
+
+/* Welcome screen: warm, playful school illustration with a polished feel */
+#login{max-width:440px;margin:5vh auto 8vh;position:relative}
+.login-hero{position:relative;overflow:hidden;padding:26px 24px 20px;border-radius:22px 22px 0 0;background:linear-gradient(135deg,#eef2ff 0%,#f5f3ff 55%,#fff7ed 100%);border:1px solid #e4e7fb;border-bottom:0}
+.school-art{height:100px;position:relative;margin-bottom:12px;background:radial-gradient(circle at 22% 55%,#c7d2fe 0 28px,transparent 29px),radial-gradient(circle at 75% 38%,#fde68a 0 25px,transparent 26px)}
+.school-art span{position:absolute;display:grid;place-items:center;font-weight:900;box-shadow:0 8px 18px #34405412}
+.art-book{left:calc(50% - 32px);top:23px;width:64px;height:48px;border-radius:9px;background:#4f46e5;color:white;font-size:10px;letter-spacing:2px;transform:rotate(-5deg);border:3px solid white}
+.art-pencil{left:calc(50% + 38px);top:8px;color:#d97706;font-size:36px;transform:rotate(25deg)}.art-star{left:16%;top:10px;color:#6366f1;font-size:27px}.art-cap{right:13%;bottom:3px;width:32px;height:32px;border-radius:10px;background:#d1fae5;color:#047857;transform:rotate(10deg)}.art-spark{left:28%;bottom:2px;color:#e879f9;font-size:23px}
+.hero-kicker{font-size:10px;font-weight:800;letter-spacing:.18em;color:#6366f1}.hero-title{font-size:27px;line-height:1.16;letter-spacing:-.045em;margin:8px 0;color:#172033}.hero-title span{color:#4f46e5}.hero-subtitle{font-size:13px;color:#667085;margin:0}
+#login .login-card{border-radius:0 0 22px 22px;border-top:0;padding:22px 24px 24px}
+/* Modern professional visual system */
+:root{--bg:#f4f6fa;--card:#fff;--tx:#172033;--mu:#718096;--ac:#4f46e5;--bd:#e5e9f2;--ok:#16845b;--bad:#c24152;--side:#111827;--side2:#252f43}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-.01em;background:var(--bg);color:var(--tx)}
+#app{gap:24px;padding:22px;background:linear-gradient(135deg,#f6f8fc 0%,#f1f4f9 100%)}
+#side{background:linear-gradient(180deg,#151c2d 0%,#101625 100%);border:1px solid #273148;border-radius:20px;box-shadow:0 16px 36px rgba(15,23,42,.13);padding:18px 12px}
+#side .brand{padding:6px 10px 22px;gap:12px}
+#side .brand .logo{background:#eef2ff;color:#4f46e5;width:42px;height:42px;border-radius:13px}
+#side .brand .logo svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#app #nav{gap:5px}
+#app #nav button{border-radius:11px;padding:11px 13px;color:#c5cede;transition:background .18s,color .18s,transform .18s}
+#app #nav button .ni{width:21px;height:21px;display:grid;place-items:center}
+#app #nav button .ni svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#app #nav button:hover{background:#252f43;color:#fff;transform:translateX(2px)}
+#app #nav button.on{background:#eef2ff;color:#4338ca;box-shadow:none;font-weight:700}
+#content header{border:1px solid #e7ebf3;border-radius:15px;box-shadow:0 4px 18px rgba(25,35,55,.035);padding:13px 18px;margin-bottom:20px}
+#pagetitle{font-size:21px;font-weight:750;letter-spacing:-.035em}
+.global-search-wrap{max-width:390px}
+#globalSearch{background:#f8fafc;border-color:#e3e8f1;border-radius:11px;padding:11px 14px}
+#globalSearch:focus,input:focus,select:focus{outline:3px solid rgba(79,70,229,.13);border-color:#818cf8!important}
+.card,.admin-stat{background:#fff;border:1px solid #e7ebf3;border-radius:15px;box-shadow:0 3px 12px rgba(15,23,42,.025);padding:17px}
+.admin-stat{padding:19px;transition:transform .18s,box-shadow .18s}
+.admin-stat:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(15,23,42,.07)}
+.admin-stat .stat-value{font-size:29px;color:#3730a3;letter-spacing:-.04em}
+.admin-stat .stat-label{font-weight:600;color:#718096}
+.ico{background:#eef2ff;color:#4f46e5;border-radius:12px;width:40px;height:40px}
+button{font-weight:600;transition:background .15s,border-color .15s,transform .15s}
+button.pri{background:#4f46e5;border-radius:10px;box-shadow:0 2px 4px rgba(79,70,229,.15)}
+button.pri:hover{background:#4338ca;transform:translateY(-1px)}
+button.sec{background:#fff;border:1px solid #dfe5ef;color:#344054;border-radius:10px}
+button.sec:hover{background:#f8fafc;border-color:#cbd5e1}
+button.lnk{color:#4f46e5}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=time],input[type=number],input[type=tel],input[type=month],input[type=search],select{border:1px solid #dfe5ef;border-radius:10px;background:#fff;padding:10px 12px}
+.tbl{border-collapse:separate;border-spacing:0;font-size:13.5px;min-width:680px}
+.tbl th,.tbl td{padding:12px 13px;border-bottom:1px solid #edf0f5}
+.tbl th{background:#f8fafc;color:#667085;font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.055em;white-space:nowrap}
+.tbl thead tr th:first-child{border-top-left-radius:9px}.tbl thead tr th:last-child{border-top-right-radius:9px}
+.tbl tbody tr:hover{background:#fafbff}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tag{border:0;border-radius:7px;padding:4px 8px;font-weight:650}
+.tag.ok{background:#e8f7ef;color:#16734c}.tag.bad{background:#fff0f1;color:#b42335}
+.item{padding:12px 10px;border-bottom:1px solid #edf0f5}
+.att-actions button{border-radius:9px;padding:8px 11px;font-size:13px}
+#sheet{border-radius:20px 20px 0 0;padding:22px;box-shadow:0 -12px 40px rgba(15,23,42,.15)}
+#modal{background:rgba(15,23,42,.48);backdrop-filter:blur(3px)}
+#login .card{padding:24px;border-radius:18px;box-shadow:0 16px 40px rgba(15,23,42,.08)}
+@media(max-width:800px){#app{padding:10px;gap:12px}#side{border-radius:16px}#content header{gap:10px;flex-wrap:wrap}#globalSearch{min-width:0}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+
+
+/* Sésame d'esprit professional refinement */
+:root{--bg:#f4f7fb;--card:#fff;--tx:#172033;--mu:#68758a;--ac:#4f46e5;--bd:#e2e8f0;--ok:#16865c;--bad:#d14343;--side:#172554;--side2:#3730a3}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em}
+#app{gap:22px;padding:20px;background:linear-gradient(135deg,#f8fafc,#f1f5f9)}
+#side{background:linear-gradient(180deg,#172554 0%,#1e1b4b 100%);border-radius:20px;box-shadow:0 12px 36px rgba(23,37,84,.13);padding:20px 13px}
+#side .brand .logo{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16)}
+#side .brand .logo svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#content{min-width:0;flex:1}
+header{border:1px solid #e8edf5;border-radius:16px;box-shadow:0 4px 18px rgba(15,23,42,.035);padding:15px 20px;gap:16px}
+#pagetitle{font-size:21px;font-weight:750;color:#172033}
+#app #nav button{border-radius:11px;padding:11px 12px;font-weight:550;transition:all .18s ease}
+#app #nav button.on{background:rgba(255,255,255,.15);box-shadow:inset 3px 0 #a5b4fc;color:#fff}
+#app #nav button:hover{transform:translateX(2px);background:rgba(255,255,255,.1)}
+main{padding:20px 0 40px}
+.card,.admin-stat{border:1px solid #e5eaf2;border-radius:16px;box-shadow:0 4px 16px rgba(15,23,42,.035);padding:16px}
+.admin-stat .stat-value{color:#3730a3;font-size:29px;letter-spacing:-.04em}
+.admin-stat .ico{display:none}
+.admin-stat:before{content:"";display:block;width:32px;height:4px;border-radius:4px;background:linear-gradient(90deg,#6366f1,#a5b4fc);margin-bottom:12px}
+button{transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+button.pri{background:#4f46e5;border-radius:10px;font-weight:650;box-shadow:0 3px 8px rgba(79,70,229,.14)}
+button.pri:hover{background:#4338ca;box-shadow:0 5px 14px rgba(79,70,229,.2);transform:translateY(-1px)}
+button.sec{border-color:#d8e0eb;background:#fff;border-radius:10px;color:#334155}
+button.sec:hover{background:#f8fafc;border-color:#a5b4fc}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=time],input[type=number],input[type=tel],input[type=month],input[type=search],select{border-color:#dbe3ee;border-radius:10px;padding:11px 12px;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{border-color:#818cf8!important;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.tbl{border-collapse:separate;border-spacing:0;font-size:13.5px}
+.tbl th{background:#f8fafc;color:#64748b;font-size:11px;letter-spacing:.055em;text-transform:uppercase;padding:12px 10px;border-bottom:1px solid #e2e8f0}
+.tbl td{padding:12px 10px;border-bottom:1px solid #edf1f6}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr:hover td{background:#fafbff}
+.tag{border:0;border-radius:999px;padding:4px 9px;font-weight:650;background:#f1f5f9;color:#475569}
+.tag.ok{background:#dcfce7;color:#166534}.tag.bad{background:#fee2e2;color:#991b1b}
+.item{padding:12px 2px;border-bottom-color:#edf1f6}
+.global-search-wrap input{border-radius:12px;background:#f8fafc}
+#globalResults{border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 18px 40px rgba(15,23,42,.12);overflow:hidden}
+#sheet{border-radius:20px 20px 0 0;padding:22px;box-shadow:0 -10px 40px rgba(15,23,42,.12)}
+.login-hero{padding:12px 0 18px}
+.login-card{border-radius:20px!important;box-shadow:0 18px 50px rgba(30,41,59,.1)!important;border:1px solid #e5eaf2!important}
+@media(max-width:850px){#app{display:block;padding:10px}#side{position:relative;top:0;width:100%;max-height:none;margin-bottom:12px}#app #nav{flex-direction:row;overflow-x:auto;gap:5px;padding-bottom:4px}#app #nav button{width:auto;flex:0 0 auto;white-space:nowrap}#app #nav button .ni{width:18px}header{flex-wrap:wrap}main{padding-top:12px}}
+
+/* ===== Polished data views: calmer tables, clear totals, friendly accents ===== */
+:root{--bg:#f6f8fc;--card:#fff;--tx:#172033;--mu:#667085;--ac:#4f46e5;--bd:#e6eaf2;--side:#4338a8;--side2:#5b52d6;--ok:#16845b;--bad:#c43d56}
+#content main{color:var(--tx)}
+.admin-stat{overflow:hidden;background:linear-gradient(145deg,#fff 70%,#f5f3ff);border:1px solid #e8eaf5;box-shadow:0 8px 24px rgba(35,45,90,.045);transition:transform .18s,box-shadow .18s}
+.admin-stat:before{content:"";position:absolute;width:76px;height:76px;right:-24px;bottom:-30px;border-radius:50%;background:rgba(99,102,241,.075);pointer-events:none}
+.admin-stat .stat-value{letter-spacing:-.035em}
+.card.tbl-wrap{padding:0;overflow:hidden;border:1px solid #e6eaf2;border-radius:18px;box-shadow:0 8px 28px rgba(24,39,75,.045);margin:10px 0 16px}
+.card.tbl-wrap>h3{margin:0;padding:17px 20px 12px;font-size:16px;letter-spacing:-.015em}
+.tbl-wrap{width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.tbl{width:100%;min-width:700px;border-collapse:separate;border-spacing:0;font-size:13px}
+.tbl thead th{position:sticky;top:0;z-index:1;background:#f7f8fc;color:#667085;font-size:11px;font-weight:750;letter-spacing:.045em;text-transform:uppercase;padding:13px 14px;border-bottom:1px solid #e6eaf2;white-space:nowrap}
+.tbl tbody td{padding:13px 14px;border-bottom:1px solid #eef1f6;vertical-align:middle;line-height:1.45}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl tbody tr:nth-child(even) td{background:#fcfcfe}
+.tbl tbody tr:hover td{background:#f4f5ff}
+.tbl td:first-child{font-weight:550}
+.tbl .sec{background:#fff;border-color:#e0e5f0;color:#4338a8}
+.tbl .sec:hover,.sec:hover{background:#f4f3ff;border-color:#c9c5ff}
+button.pri{background:linear-gradient(135deg,#4f46e5,#6558d9);box-shadow:0 5px 12px rgba(79,70,229,.18);font-weight:700;transition:transform .15s,box-shadow .15s}
+button.pri:hover{background:linear-gradient(135deg,#4338ca,#5b52d6);transform:translateY(-1px);box-shadow:0 7px 16px rgba(79,70,229,.23)}
+button.sec,button.ic{transition:background .15s,border-color .15s,transform .15s}
+button.ic{width:34px;height:32px;border:1px solid #e4e8f1;border-radius:9px;background:#fff;color:#4f46e5;font-size:15px;line-height:1}
+button.ic:hover{background:#f4f3ff;border-color:#c9c5ff}
+button.ic.d{color:#c43d56}
+.tag{font-size:11px;letter-spacing:.01em;padding:5px 9px;border-radius:999px;font-weight:750}
+.row input[type=search],#globalSearch{background:#fff;border:1px solid #dfe5f0;box-shadow:0 2px 5px rgba(20,30,60,.025)}
+.row input:focus,#globalSearch:focus,select:focus{outline:3px solid rgba(99,102,241,.13);border-color:#9a94f5}
+.page-summary{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 14px}
+.summary-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid #e6eaf2;background:#fff;border-radius:13px;padding:9px 13px;color:#475467;font-size:12px;font-weight:650;box-shadow:0 3px 10px rgba(24,39,75,.025)}
+.summary-chip strong{font-size:15px;color:#4338a8}
+.group-name-button{display:inline-flex;align-items:center;gap:8px;background:#f5f4ff!important;border:1px solid #e2dfff!important;border-radius:10px!important;padding:8px 11px!important;font-weight:750!important;color:#4338a8!important}
+.group-count-pill{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#4338a8;font-weight:800;font-size:12px}
+.table-empty{padding:28px!important;text-align:center!important;color:#667085;font-weight:500!important}
+.global-result{border-radius:12px!important;border:1px solid #edf0f6!important}
+.global-result:hover{border-color:#c9c5ff!important;transform:translateY(-1px)}
+@media(max-width:700px){.admin-grid{gap:8px}.admin-stat{padding:13px}.admin-stat .stat-value{font-size:23px}.card.tbl-wrap>h3{padding:14px 14px 10px}.tbl thead th,.tbl tbody td{padding:11px 10px}}
+
+</style></head><body>
+
+<div id="login">
+  <div class="row" style="justify-content:flex-end"><select class="lg" onchange="setLang(this.value)"><option value="en">English</option><option value="fr">Français</option><option value="ar">العربية</option></select></div>
+  <div class="login-hero"><div class="school-art" aria-hidden="true"><span class="art-book">BOOK</span><span class="art-pencil">✎</span><span class="art-star">✦</span><span class="art-cap">◆</span><span class="art-spark">✳</span></div><div class="hero-kicker">LEARN · GROW · SHINE</div><h1 class="hero-title">Hello, welcome to<br><span>Sésame d’esprit</span></h1><p class="hero-subtitle">Your learning community starts here.</p></div>
+  <div class="card login-card">
+    <h1 id="lt" style="margin-bottom:12px"></h1>
+    <div class="row"><input id="em" type="email" autocomplete="username"></div>
+    <div class="row"><input id="pw" type="password" autocomplete="current-password"></div>
+    <div class="row"><button class="pri" id="lbtn" style="flex:1" onclick="signIn()"></button></div>
+    <div id="lerr" class="err"></div>
+  </div>
+</div>
+
+<div id="app" class="hide">
+  <aside id="side"><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 5l9 4.5-9 4.5L3 9.5Z"/><path d="M6.5 11.5v4c3.5 3 7.5 3 11 0v-4M21 10v6"/></svg></span><h1 id="apptitle"></h1></div><nav id="nav"></nav></aside>
+  <div id="content">
+    <header><h2 id="pagetitle"></h2><div class="global-search-wrap"><input id="globalSearch" type="search" placeholder="Search students, teachers, groups…" onfocus="performGlobalSearch(this.value)" oninput="performGlobalSearch(this.value)" autocomplete="off"><div id="globalResults" class="hide"></div></div><span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <select class="lg" onchange="setLang(this.value)"><option value="en">English</option><option value="fr">Français</option><option value="ar">العربية</option></select>
+      <span class="mu" id="who"></span> <button class="lnk" id="outbtn" onclick="signOut()"></button></span></header>
+    <main id="main"></main>
+  </div>
+</div>
+<div id="modal" class="hide" onclick="if(event.target===this)closeForm()"><div id="sheet"></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* CONFIGURATION: replace these two placeholders with your Supabase project values.
+   Supabase Dashboard > Project Settings > API. The anon/publishable key is intended
+   for browser use; never put a service_role/secret key in this file. */
+const SUPABASE_URL = window.SUPABASE_URL || "https://ncbgxuvuffanknrofvys.supabase.co";
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "sb_publishable_fWTOW_syoTsLaH0yEPwSXA_KVau_U6y";
+const SCHOOL_NAME = window.SCHOOL_NAME || "Sésame d’ésprit";
+const THEME_COLOR = window.THEME_COLOR || "#673ab7";
+const DEFAULT_LANG = window.DEFAULT_LANG || "en";
+const OVERDUE_DAYS = window.OVERDUE_DAYS || 30;      // a student is overdue if the last payment is older than this
+const WEEKS_PER_MONTH = window.WEEKS_PER_MONTH || 4.33; // used to estimate monthly teacher cost
+const configReady = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_URL) &&
+  SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.startsWith("YOUR_");
+// Do not stay logged in: remove any old saved session and keep the new one in memory only.
+try{Object.keys(localStorage).filter(k=>k.startsWith("sb-")).forEach(k=>localStorage.removeItem(k));Object.keys(sessionStorage).filter(k=>k.startsWith("sb-")).forEach(k=>sessionStorage.removeItem(k))}catch(e){}
+const sb = (window.supabase && configReady)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:true,detectSessionInUrl:false}})
+  : null;
+
+/* ---------- languages ---------- */
+const L={
+en:{students:"Students",phone:"Phone",remove_phone:"Remove phone number",search:"Search…",print:"Print",export:"Export CSV",overdue:"Overdue",all_payments:"All payments",days_late:"days since last payment",last_payment:"Last payment",never_paid:"Never paid",no_overdue:"No overdue payments",no_results:"No results",groups_taught:"Groups taught",sessions_week:"Sessions per week",price_session:"Price per session",est_cost_month:"Estimated monthly cost",login_email:"Login email (teacher account)",add_teacher:"Add teacher",reports:"Reports",report_month:"Month",all_students:"All students",absent:"Absent",total:"Total",rate:"Attendance rate",sessions:"Teacher Sessions",money_received:"Money received",est_teacher_costs:"Estimated teacher costs",est_profit:"Estimated profit",per_teacher:"Per teacher",finance_note:"Estimated cost = sessions per week × price per session × {w} weeks. Profit = money received in the month − estimated teacher costs.",overdue_note:"Overdue = active students not marked paid, or whose last payment is more than {d} days ago.",no_access:"Your account is not linked to a teacher or to the administrator. Please ask the school administrator.",dashboard:"Dashboard",welcome:"Welcome to your school dashboard",total_students:"Total students",active_students:"Active students",groups_total:"Groups",teachers_total:"Teachers",quick_actions:"Quick actions",recent_students:"Students overview",school_summary:"School summary",attendance_today:"Attendance today",total_payments:"Recorded payments",manage_students:"Manage students",groups:"Groups",schedule:"Schedule",attendance:"Attendance",payments:"Payments",setup:"Setup",
+ login:"Login",email:"Email (your username)",password:"Password",log_in:"Log in",wrong:"Wrong email or password",log_out:"Log out",
+ add_student:"Add student",add_group:"Add group",add_class:"Add class",add_payment:"Add payment",add:"Add",edit:"Edit",
+ save:"Save",cancel:"Cancel",confirm_delete:"Delete this?",required:"is required",error:"Error",
+ no_students:"No students yet",no_groups:"No groups yet",nothing_sched:"Nothing scheduled",no_payments:"No payments yet",none_yet:"None yet",no_active:"No active students",
+ active:"Active",not_active:"Not active",paid:"Paid",not_paid:"Not paid",born:"born",students_n:"students",
+ first_name:"First name",family_name:"Family name",dob:"Date of birth",mother_phone:"Mother’s phone number",father_phone:"Father’s phone number",group:"Group",no_group:"No group",paid_on:"Paid on (date)",subjects:"Subjects",
+ group_name:"Group name",teacher_name:"Teacher name",subject_name:"Subject / class name",class_subject:"Class / subject",teacher:"Teacher",day:"Day",start:"Start",end:"End",
+ student:"Student",amount:"Amount",date:"Date",note:"Note",all_groups:"All groups",present:"Present",
+ att_hint:"Attendance is saved for the date and hour above. Change either to record another class.",add_subjects_first:"Add subjects in Setup first",
+ teachers:"Teachers",subjects_classes:"Subjects / classes",days:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]},
+fr:{phone:"Téléphone",remove_phone:"Supprimer le numéro",search:"Rechercher…",print:"Imprimer",export:"Exporter CSV",overdue:"En retard",all_payments:"Tous les paiements",days_late:"jours depuis le dernier paiement",last_payment:"Dernier paiement",never_paid:"Jamais payé",no_overdue:"Aucun paiement en retard",no_results:"Aucun résultat",groups_taught:"Groupes enseignés",sessions_week:"Séances par semaine",price_session:"Prix par séance",est_cost_month:"Coût mensuel estimé",login_email:"E-mail de connexion (compte enseignant)",add_teacher:"Ajouter un enseignant",reports:"Rapports",report_month:"Mois",all_students:"Tous les élèves",absent:"Absent",total:"Total",rate:"Taux de présence",sessions:"Séances enseignants",finance:"Finances",money_received:"Argent reçu",est_teacher_costs:"Coûts estimés des enseignants",est_profit:"Bénéfice estimé",per_teacher:"Par enseignant",finance_note:"Coût estimé = séances par semaine × prix par séance × {w} semaines. Bénéfice = argent reçu dans le mois − coûts estimés des enseignants.",overdue_note:"En retard = élèves actifs non marqués payés, ou dont le dernier paiement date de plus de {d} jours.",no_access:"Votre compte n'est lié ni à un enseignant ni à l'administrateur. Veuillez contacter l'administrateur de l'école.",dashboard:"Tableau de bord",welcome:"Bienvenue sur le tableau de bord de votre école",total_students:"Total des élèves",active_students:"Élèves actifs",groups_total:"Groupes",teachers_total:"Enseignants",quick_actions:"Actions rapides",recent_students:"Aperçu des élèves",school_summary:"Résumé de l’école",attendance_today:"Présence du jour",total_payments:"Paiements enregistrés",manage_students:"Gérer les élèves",students:"Élèves",groups:"Groupes",schedule:"Emploi du temps",attendance:"Présence",payments:"Paiements",setup:"Configuration",
+ login:"Connexion",email:"E-mail (votre identifiant)",password:"Mot de passe",log_in:"Se connecter",wrong:"E-mail ou mot de passe incorrect",log_out:"Déconnexion",
+ add_student:"Ajouter un élève",add_group:"Ajouter un groupe",add_class:"Ajouter un cours",add_payment:"Ajouter un paiement",add:"Ajouter",edit:"Modifier",
+ save:"Enregistrer",cancel:"Annuler",confirm_delete:"Supprimer ?",required:"est obligatoire",error:"Erreur",
+ no_students:"Aucun élève",no_groups:"Aucun groupe",nothing_sched:"Rien de prévu",no_payments:"Aucun paiement",none_yet:"Aucun",no_active:"Aucun élève actif",
+ active:"Actif",not_active:"Inactif",paid:"Payé",not_paid:"Non payé",born:"né(e) le",students_n:"élèves",
+ first_name:"Prénom",family_name:"Nom de famille",dob:"Date de naissance",mother_phone:"Téléphone de la mère",father_phone:"Téléphone du père",group:"Groupe",no_group:"Sans groupe",paid_on:"Payé le (date)",subjects:"Matières",
+ group_name:"Nom du groupe",teacher_name:"Nom de l'enseignant",subject_name:"Matière / cours",class_subject:"Cours / matière",teacher:"Enseignant",day:"Jour",start:"Début",end:"Fin",
+ student:"Élève",amount:"Montant",date:"Date",note:"Remarque",all_groups:"Tous les groupes",present:"Présent",
+ att_hint:"La présence est enregistrée pour la date et l'heure ci-dessus. Changez l'une des deux pour un autre cours.",add_subjects_first:"Ajoutez d'abord des matières dans Configuration",
+ teachers:"Enseignants",subjects_classes:"Matières / cours",days:["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"]},
+ar:{phone:"الهاتف",remove_phone:"حذف رقم الهاتف",search:"بحث…",print:"طباعة",export:"تصدير CSV",overdue:"متأخرة",all_payments:"كل المدفوعات",days_late:"يوماً منذ آخر دفعة",last_payment:"آخر دفعة",never_paid:"لم يدفع أبداً",no_overdue:"لا توجد مدفوعات متأخرة",no_results:"لا توجد نتائج",groups_taught:"المجموعات",sessions_week:"الحصص أسبوعياً",price_session:"سعر الحصة",est_cost_month:"التكلفة الشهرية التقديرية",login_email:"بريد تسجيل الدخول (حساب المعلم)",add_teacher:"إضافة معلم",reports:"التقارير",report_month:"الشهر",all_students:"كل الطلاب",absent:"غائب",total:"المجموع",rate:"نسبة الحضور",sessions:"حصص المعلمين",finance:"المالية",money_received:"المبالغ المستلمة",est_teacher_costs:"تكلفة المعلمين التقديرية",est_profit:"الربح التقديري",per_teacher:"لكل معلم",finance_note:"التكلفة التقديرية = الحصص أسبوعياً × سعر الحصة × {w} أسابيع. الربح = المبالغ المستلمة في الشهر − تكلفة المعلمين التقديرية.",overdue_note:"المتأخرة = الطلاب النشطون غير المسجلين كمدفوع، أو الذين مضى على آخر دفعة لهم أكثر من {d} يوماً.",no_access:"حسابك غير مرتبط بمعلم أو بالمسؤول. يرجى التواصل مع مسؤول المدرسة.",dashboard:"لوحة التحكم",welcome:"مرحباً بك في لوحة تحكم المدرسة",total_students:"إجمالي الطلاب",active_students:"الطلاب النشطون",groups_total:"المجموعات",teachers_total:"المعلمون",quick_actions:"إجراءات سريعة",recent_students:"نظرة عامة على الطلاب",school_summary:"ملخص المدرسة",attendance_today:"حضور اليوم",total_payments:"المدفوعات المسجلة",manage_students:"إدارة الطلاب",students:"الطلاب",groups:"المجموعات",schedule:"الجدول",attendance:"الحضور",payments:"المدفوعات",setup:"الإعدادات",
+ login:"تسجيل الدخول",email:"البريد الإلكتروني (اسم المستخدم)",password:"كلمة المرور",log_in:"دخول",wrong:"البريد الإلكتروني أو كلمة المرور غير صحيحة",log_out:"تسجيل الخروج",
+ add_student:"إضافة طالب",add_group:"إضافة مجموعة",add_class:"إضافة حصة",add_payment:"إضافة دفعة",add:"إضافة",edit:"تعديل",
+ save:"حفظ",cancel:"إلغاء",confirm_delete:"هل تريد الحذف؟",required:"مطلوب",error:"خطأ",
+ no_students:"لا يوجد طلاب بعد",no_groups:"لا توجد مجموعات بعد",nothing_sched:"لا توجد حصص",no_payments:"لا توجد مدفوعات بعد",none_yet:"لا يوجد",no_active:"لا يوجد طلاب نشطون",
+ active:"نشط",not_active:"غير نشط",paid:"مدفوع",not_paid:"غير مدفوع",born:"من مواليد",students_n:"طلاب",
+ first_name:"الاسم",family_name:"اللقب",dob:"تاريخ الميلاد",mother_phone:"هاتف الأم",father_phone:"هاتف الأب",group:"المجموعة",no_group:"بدون مجموعة",paid_on:"تاريخ الدفع",subjects:"المواد",
+ group_name:"اسم المجموعة",teacher_name:"اسم المعلم",subject_name:"المادة / الحصة",class_subject:"الحصة / المادة",teacher:"المعلم",day:"اليوم",start:"البداية",end:"النهاية",
+ student:"الطالب",amount:"المبلغ",date:"التاريخ",note:"ملاحظة",all_groups:"كل المجموعات",present:"حاضر",
+ att_hint:"يُحفظ الحضور للتاريخ والساعة أعلاه. غيّر أحدهما لتسجيل حصة أخرى.",add_subjects_first:"أضف المواد أولاً من الإعدادات",
+ teachers:"المعلمون",subjects_classes:"المواد / الحصص",days:["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"]}
+};
+let lang="en";
+try{lang=localStorage.getItem("lang")||DEFAULT_LANG||"en"}catch(e){lang=DEFAULT_LANG||"en"}
+if(!L[lang])lang="en";
+const t=k=>(L[lang][k]??L.en[k]??k);
+const DAYS=()=>L[lang].days;
+function setLang(v){
+  lang=v;try{localStorage.setItem("lang",v)}catch(e){}
+  document.documentElement.lang=v;document.documentElement.dir=v==="ar"?"rtl":"ltr";
+  document.querySelectorAll("select.lg").forEach(s=>s.value=v);
+  $("lt").textContent=SCHOOL_NAME;$("apptitle").textContent=SCHOOL_NAME;document.title=SCHOOL_NAME;
+  $("em").placeholder=t("email");$("pw").placeholder=t("password");$("lbtn").textContent=t("log_in");$("outbtn").textContent=t("log_out");
+  nav();render();
+}
+
+/* ---------- basics ---------- */
+let isAdmin=false,myTeacher=null,roleReady=false;
+const NAMES=["groups","teachers","subjects","students","schedule","attendance","payments","teacher_sessions"];
+const S={}; NAMES.forEach(n=>S[n]=[]);
+const today=()=>new Date().toISOString().slice(0,10);
+let tab="dashboard",attDate=today(),attHour="16:00",attGroup="",payGroup="",selectedGroupId="";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nm=(arr,id)=>(arr.find(x=>x.id===id)||{}).name||"—";
+const full=s=>s?`${s.family_name} ${s.first_name}`:"?";
+const stu=id=>S.students.find(s=>s.id===id);
+document.documentElement.style.setProperty("--ac",THEME_COLOR || "#3b6cf6");
+
+/* ---------- login ---------- */
+async function signIn(){
+  const err = $("lerr"), btn = $("lbtn");
+  err.textContent = "";
+  if (!window.supabase) {
+    err.textContent = "Supabase library failed to load. Check your internet connection and reload this page.";
+    return;
+  }
+  if (!configReady || !sb) {
+    err.textContent = "Supabase is not configured. Edit SUPABASE_URL and SUPABASE_ANON_KEY near the top of this file.";
+    return;
+  }
+  const email = $("em").value.trim(), password = $("pw").value;
+  if (!email || !password) { err.textContent = "Enter your email and password."; return; }
+  btn.disabled = true; btn.textContent = "Signing in…";
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      console.error("Supabase sign-in error:", error);
+      const msg = String(error.message || "");
+      if (/invalid login credentials/i.test(msg)) err.textContent = t("wrong");
+      else if (/email not confirmed/i.test(msg)) err.textContent = "Please confirm this email address in Supabase before signing in.";
+      else err.textContent = "Login failed: " + (msg || "Unknown Supabase error");
+      return;
+    }
+    if (data && data.session) showSession(data.session);
+  } catch (e) {
+    console.error("Sign-in request failed:", e);
+    err.textContent = "Could not contact Supabase. Check the project URL, network connection, and browser console.";
+  } finally {
+    btn.disabled = false; btn.textContent = t("log_in");
+  }
+}
+async function signOut(){
+  if (!sb) return;
+  const { error } = await sb.auth.signOut();
+  if (error) alert(t("error") + ": " + error.message);
+}
+function showSession(session){
+  if(!session){roleReady=false;isAdmin=false;myTeacher=null;NAMES.forEach(n=>S[n]=[]);nav();render();}
+  $("login").classList.toggle("hide", !!session);
+  $("app").classList.toggle("hide", !session);
+  if (session) {
+    $("who").textContent = session.user.email || "";
+    // Run after the auth event callback returns to avoid Supabase auth-lock deadlocks.
+    setTimeout(() => load().catch(e => {
+      console.error("Data loading failed:", e);
+      alert("Signed in, but data could not be loaded. Check the database tables and Supabase Row Level Security policies.");
+    }), 0);
+  }
+}
+if (sb) {
+  sb.auth.onAuthStateChange((_event, session) => showSession(session));
+  sb.auth.getSession().then(({ data, error }) => {
+    if (error) console.error("Could not restore session:", error);
+    showSession(data && data.session);
+  }).catch(e => console.error("Session restore failed:", e));
+} else {
+  $("lerr").textContent = !window.supabase
+    ? "Supabase library failed to load. Check your internet connection and reload this page."
+    : "Setup required: edit SUPABASE_URL and SUPABASE_ANON_KEY near the top of this file.";
+}
+$("pw").addEventListener("keydown", e => { if (e.key === "Enter") signIn(); });
+
+/* ---------- data ---------- */
+async function load(){
+  if (!sb) throw new Error("Supabase is not configured.");
+  if(!roleReady){
+    const a=await sb.rpc("is_admin"); if(a.error)throw a.error;
+    const m=await sb.rpc("my_teacher_id");
+    isAdmin=!!a.data; myTeacher=m.data||null; roleReady=true;
+    tab=isAdmin?"dashboard":"students";
+  }
+  const res=await Promise.all(NAMES.map(n=>sb.from(n).select("*")));
+  // Teacher sessions are an optional newer feature. If its migration has not
+  // been run yet, keep the rest of the app usable and show an empty sessions list.
+  const requiredIndex = res.findIndex((r,i)=>r.error && NAMES[i] !== "teacher_sessions");
+  if (requiredIndex >= 0) throw res[requiredIndex].error;
+  NAMES.forEach((n,i)=>S[n]=res[i].error ? [] : (res[i].data||[]));
+  if (res[NAMES.indexOf("teacher_sessions")]?.error) console.warn("Teacher Sessions is not enabled yet. Run Sesame_Supabase_Session_Migration.sql to activate it.");
+  ["groups","teachers","subjects"].forEach(n=>S[n].sort((a,b)=>a.name.localeCompare(b.name)));
+  S.students.sort((a,b)=>full(a).localeCompare(full(b)));
+  nav();render();
+}
+async function run(q){const {error}=await q;if(error){alert(t("error")+": "+error.message);return false}closeForm();await load();return true}
+const save=(tb,id,d)=>run(id?sb.from(tb).update(d).eq("id",id):sb.from(tb).insert(d));
+const del=(tb,id)=>confirm(t("confirm_delete"))&&run(sb.from(tb).delete().eq("id",id));
+
+/* ---------- forms (add / edit) ---------- */
+const opt=(arr,l)=>arr.map(x=>({v:x.id,l:l(x)}));
+const FORMS={
+ students:()=>[
+  {k:"first_name",l:"first_name",req:1},{k:"family_name",l:"family_name",req:1},
+  {k:"dob",l:"dob",t:"date"},{k:"monthly_fee",l:"Monthly fee",t:"number"},{k:"phone",l:"phone",t:"tel"},{k:"mother_phone",l:"mother_phone",t:"tel"},{k:"father_phone",l:"father_phone",t:"tel"},
+  {k:"group_ids",l:"Groups (select all that apply)",t:"multi",o:opt(S.groups,g=>`${g.name} — ${grpTeachers(g.id)||"No teacher assigned"}`)},
+  {k:"active",l:"active",t:"checkbox"},
+  {k:"paid",l:"paid",t:"checkbox"},{k:"paid_on",l:"paid_on",t:"date"},
+  {k:"subject_ids",l:"subjects",t:"multi",o:opt(S.subjects,x=>x.name)}],
+ groups:()=>[{k:"name",l:"group_name",req:1}],
+ teachers:()=>[{k:"name",l:"teacher_name",req:1},{k:"phone",l:"phone",t:"tel"},{k:"price_per_session",l:"Default pay per student attending",t:"number"},{k:"login_email",l:"login_email",t:"email"}],
+ subjects:()=>[{k:"name",l:"subject_name",req:1}],
+ schedule:()=>[
+  {k:"group_id",l:"group",t:"select",req:1,o:opt(S.groups,g=>g.name)},
+  {k:"subject_id",l:"class_subject",t:"select",o:[{v:"",l:"—"},...opt(S.subjects,x=>x.name)]},
+  {k:"teacher_id",l:"teacher",t:"select",o:[{v:"",l:"—"},...opt(S.teachers,x=>x.name)]},
+  {k:"day",l:"day",t:"select",n:1,o:DAYS().map((d,i)=>({v:i,l:d}))},
+  {k:"start_time",l:"start",t:"time",req:1},{k:"end_time",l:"end",t:"time"},{k:"teacher_rate",l:"Teacher pay per student attending",t:"number"},{k:"student_fee",l:"Student fee per attended class",t:"number"}],
+ teacher_sessions:()=>[
+  {k:"session_type",l:"Session type",t:"select",req:1,o:[{v:"group",l:"Group session"},{v:"private",l:"Private session"}]},
+  {k:"session_date",l:"Session date",t:"date",req:1},
+  {k:"teacher_id",l:"teacher",t:"select",req:1,o:opt(S.teachers,x=>x.name)},
+  {k:"group_id",l:"group",t:"select",o:[{v:"",l:"—"},...opt(S.groups,g=>g.name)]},
+  {k:"student_id",l:"Private student (if private)",t:"select",o:[{v:"",l:"—"},...opt(S.students,s=>full(s))]},
+  {k:"rate",l:"Pay per student attending (private session rate for private sessions)",t:"number",req:1},
+  {k:"taught",l:"Session actually taught (payable)",t:"checkbox"},
+  {k:"note",l:"note"}],
+ payments:()=>[
+  {k:"student_id",l:"student",t:"select",req:1,o:[...S.students].sort((a,b)=>nm(S.groups,a.group_id).localeCompare(nm(S.groups,b.group_id))||full(a).localeCompare(full(b))).map(s=>({v:s.id,l:`${full(s)} (${nm(S.groups,s.group_id)})`}))},
+  {k:"amount",l:"amount",t:"number",req:1},{k:"paid_on",l:"date",t:"date",req:1},{k:"note",l:"note"}]
+};
+const DEFAULTS={students:{active:true},payments:{paid_on:today()},schedule:{start_time:"16:00",day:0},teacher_sessions:{session_type:"group",session_date:today(),taught:true,rate:0}};
+let formCtx=null;
+let schedulePrefillTeacher="";
+function assignTeacherClass(id){schedulePrefillTeacher=id;openForm("schedule");}
+function openForm(table,id){
+  const rec=id?{...S[table].find(x=>x.id===id)}:{...(DEFAULTS[table]||{})};
+  if(table==="schedule"&&!id&&schedulePrefillTeacher){rec.teacher_id=schedulePrefillTeacher;schedulePrefillTeacher="";}
+  if(table==="students"){rec.group_ids=groupIds(rec);if(!id&&selectedGroupId&&!rec.group_ids.length)rec.group_ids=[selectedGroupId];}
+  const fs=FORMS[table]();formCtx={table,id,fs};
+  let h=`<h1 style="margin-bottom:6px">${t(id?"edit":"add")}</h1>`;
+  fs.forEach(f=>{
+    if(table==="students" && f.k==="assigned_teacher_view") return;
+    const val=rec[f.k]??"";const fid="f_"+f.k;const lab=t(f.l);
+    if(f.t==="checkbox")h+=`<div class="chk"><input type="checkbox" id="${fid}" ${val?"checked":""}><label for="${fid}">${lab}</label></div>`;
+    else{h+=`<label class="f">${lab}${f.req?" *":""}</label>`;
+      if(f.t==="select")h+=`<select id="${fid}">${f.o.map(o=>`<option value="${o.v}" ${String(o.v)===String(val)?"selected":""}>${esc(o.l)}</option>`).join("")}</select>`;
+      else if(f.t==="multi")h+=(f.o.map(o=>`<div class="chk"><input type="checkbox" data-m="${f.k}" value="${o.v}" ${(val||[]).includes(o.v)?"checked":""}> ${esc(o.l)}</div>`).join("")||`<div class="mu">${t("add_subjects_first")}</div>`);
+      else h+=`<input id="${fid}" type="${f.t||"text"}" value="${esc(val)}">`;}
+  });
+  h+=`<div class="row" style="margin-top:14px"><button class="pri" style="flex:1" onclick="submitForm()">${t("save")}</button><button class="sec" onclick="closeForm()">${t("cancel")}</button></div>`;
+  $("sheet").innerHTML=h;$("modal").classList.remove("hide");
+}
+function closeForm(){$("modal").classList.add("hide");formCtx=null}
+async function submitForm(){
+  const {table,id,fs}=formCtx;const d={};
+  for(const f of fs){
+    let x;
+    if(f.t==="checkbox")x=$("f_"+f.k).checked;
+    else if(f.t==="multi")x=[...document.querySelectorAll(`[data-m="${f.k}"]:checked`)].map(e=>e.value);
+    else{x=$("f_"+f.k).value.trim();if(f.req&&!x)return alert(t(f.l)+" "+t("required"));
+      if(x==="")x=null;else if(f.t==="number"||f.n)x=Number(x);}
+    d[f.k]=x;
+  }
+  if(table==="teacher_sessions"){if(d.session_type==="group"){d.student_id=null;const scheduled=S.schedule.find(x=>x.group_id===d.group_id&&x.teacher_id===d.teacher_id);if((!d.rate||d.rate===0)&&scheduled)d.rate=Number(scheduled.teacher_rate)||Number((S.teachers.find(x=>x.id===d.teacher_id)||{}).price_per_session)||0;}if(d.session_type==="private")d.group_id=null;if(!d.taught)d.rate=Number(d.rate)||0;}
+  if(table==="teachers"){if(d.login_email)d.login_email=d.login_email.toLowerCase();if(d.price_per_session==null)d.price_per_session=0}
+  if(table==="students"){d.group_ids=Array.isArray(d.group_ids)?d.group_ids:[];d.group_id=d.group_ids[0]||null;}
+  if(table==="schedule"){d.teacher_rate=Number(d.teacher_rate)||0;d.student_fee=Number(d.student_fee)||0;}
+  if(table==="students"&&d.paid&&!d.paid_on)d.paid_on=today();
+  if(table==="students"&&!d.paid)d.paid_on=null;
+  const ok=await save(table,id,d);
+  if(ok&&table==="payments"&&!id){await sb.from("students").update({paid:true,paid_on:d.paid_on}).eq("id",d.student_id);await load()}
+}
+const eb=(tb,id)=>!isAdmin?"":`<button class="ic" onclick="openForm('${tb}','${id}')">✎</button><button class="ic d" onclick="del('${tb}','${id}')">×</button>`;
+const addBtn=(tb,k)=>!isAdmin?"":`<div class="row"><button class="pri" onclick="openForm('${tb}')">+ ${t(k)}</button></div>`;
+const grpOpts=sel=>S.groups.map(g=>`<option value="${g.id}" ${g.id===sel?"selected":""}>${esc(g.name)}</option>`).join("");
+
+/* ---------- helpers ---------- */
+const Q={},V={};
+let payView="all",Rm=today().slice(0,7),Rg="",Rs="",Fm=today().slice(0,7);
+const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const hit=(q,...f)=>!q||norm(f.join(" ")).includes(norm(q));
+const money=n=>(Math.round((Number(n)||0)*100)/100).toLocaleString();
+const daysSince=d=>d?Math.floor((Date.now()-new Date(d+"T00:00:00").getTime())/864e5):null;
+const tel=p=>p?`<a href="tel:${esc(String(p).replace(/\s+/g,""))}" style="color:var(--side);text-decoration:none">${esc(p)}</a>`:"";
+const none=k=>`<span class="mu">${t(k)}</span>`;
+const searchBox=()=>`<div class="row noprint"><input type="search" placeholder="🔍 ${esc(t("search"))}" value="${esc(Q[tab]||"")}" oninput="onSearch(this.value)"></div>`;
+function onSearch(v){Q[tab]=v;const b=$("body");if(b)b.innerHTML=V[tab]().body}
+let globalFilter="all";
+function chooseGlobalFilter(k){globalFilter=k;performGlobalSearch($("globalSearch")?.value||"")}
+function performGlobalSearch(v){
+ const box=$("globalResults"); if(!box)return;
+ const q=norm(v.trim());
+ const filters=[ ["all","All"],["students","Students"],["teachers","Teachers"],["groups","Groups"],["active","Active"],["paid","Paid"] ];
+ const rows=[];
+ const add=(type,id,label,detail,flags=[])=>{if((!q||hit(q,label,detail))&&(globalFilter==="all"||globalFilter===type||flags.includes(globalFilter)))rows.push({type,id,label,detail})};
+ S.students.forEach(x=>add("students",x.id,full(x),[grpName(x),x.phone,x.mother_phone,x.father_phone,subjNames(x),x.active?"active":"inactive",x.paid?"paid":"unpaid"].join(" "),[...(x.active?["active"]:[]),...(x.paid?["paid"]:[])]));
+ S.groups.forEach(x=>add("groups",x.id,x.name,grpTeachers(x.id)));
+ S.teachers.forEach(x=>add("teachers",x.id,x.name,S.schedule.filter(z=>z.teacher_id===x.id).map(z=>nm(S.groups,z.group_id)).join(" ")+" "+(x.phone||"")));
+ S.subjects.forEach(x=>add("setup",x.id,x.name,"subject"));
+ S.schedule.forEach(x=>add("schedule",x.id,nm(S.groups,x.group_id),nm(S.teachers,x.teacher_id)+" "+nm(S.subjects,x.subject_id)+" "+x.day+" "+x.start_time));
+ S.payments.forEach(x=>add("payments",x.id,full(stu(x.student_id)),String(x.amount)+" "+x.paid_on+" "+(x.note||"")+" "+grpName(stu(x.student_id))));
+ S.attendance.forEach(x=>add("attendance",x.id,full(stu(x.student_id)),x.date+" "+x.hour+" "+(x.present?"present":"absent")));
+ box.innerHTML=`<div class="global-filters">${filters.map(([k,label])=>`<button class="global-filter ${globalFilter===k?"on":""}" onclick="chooseGlobalFilter('${k}')">${label}</button>`).join("")}</div><div class="mu" style="padding:2px 3px 8px">${q?rows.length+" matching records":"Browse records · choose a filter"}</div><div class="global-result-grid">${rows.slice(0,40).map(x=>`<button class="global-result" onclick="openGlobalResult('${x.type}','${x.id}',${esc(JSON.stringify(x.label||""))},${esc(JSON.stringify(v.trim()))})"><b>${esc(x.label||"Record")}</b><div class="mu">${esc(x.type)} · ${esc(x.detail)}</div></button>`).join("")||`<div class="global-result">${t("no_results")}</div>`}</div>`;
+ box.classList.remove("hide");
+}
+
+function openGlobalResult(type,id,label,query){
+  tab=type; selectedGroupId=type==="groups"?id:"";
+  if(type==="students")Q.students=label||query;
+  else if(type!=="groups")Q[type]=label||query;
+  const gs=$("globalSearch");if(gs)gs.value="";globalFilter="all";const box=$("globalResults");if(box)box.classList.add("hide");nav();render();
+  if(type==="students"||type==="teachers")setTimeout(()=>{const target=$("main");if(target)target.scrollIntoView({behavior:"smooth",block:"start"})},20);
+}
+document.addEventListener("click",e=>{if(!e.target.closest(".global-search-wrap"))$("globalResults")?.classList.add("hide")});
+function printList(){const area=$("body");if(!area)return;window.print()}
+
+const tools=fn=>`<span class="noprint"><button class="sec" onclick="printList()">${t("print")}</button> <button class="sec" onclick="${fn}()">⬇ ${t("export")}</button></span>`;
+function csv(name,rows){
+  const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+  const txt="\ufeff"+rows.map(r=>r.map(q).join(",")).join("\r\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/csv;charset=utf-8"}));
+  a.download=name+"-"+today()+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+}
+async function clearPhone(id){if(confirm(t("confirm_delete")))await run(sb.from("students").update({phone:null}).eq("id",id))}
+
+/* ---------- data helpers ---------- */
+const groupIds=s=>[...new Set([...(Array.isArray(s?.group_ids)?s.group_ids:[]),...(s?.group_id?[s.group_id]:[])])];
+const grpName=s=>groupIds(s).map(id=>nm(S.groups,id)).filter(n=>n!=="—").join(", ")||"—";
+const subjNames=s=>(s.subject_ids||[]).map(i=>nm(S.subjects,i)).join("; ");
+const stuList=()=>S.students.filter(s=>hit(Q.students,full(s),s.phone,grpName(s),subjNames(s)));
+const studentClassFees=(s,month=today().slice(0,7))=>S.attendance.filter(a=>a.student_id===s.id&&a.present&&String(a.date||"").startsWith(month)).reduce((sum,a)=>{const sched=S.schedule.find(x=>x.group_id===(a.group_id||s.group_id)&&String(x.start_time||"").slice(0,5)===String(a.hour||"").slice(0,5));return sum+(Number(sched?.student_fee)||0)},0);
+const grpTeachers=id=>{const g=S.groups.find(x=>x.id===id);const direct=g&&g.teacher_id?nm(S.teachers,g.teacher_id):"—";const fromSchedule=[...new Set(S.schedule.filter(x=>x.group_id===id).map(x=>nm(S.teachers,x.teacher_id)).filter(n=>n!=="—"))].join(", ");return direct!=="—"?direct:fromSchedule};
+function scheduleForAttendance(a,teacherId){
+  const hour=String(a.hour||"").slice(0,5);
+  if(a.group_id){
+    return S.schedule.find(x=>x.group_id===a.group_id&&x.teacher_id===teacherId&&String(x.start_time||"").slice(0,5)===hour)||null;
+  }
+  // Legacy attendance rows may not contain group_id. Infer only when one class uniquely matches.
+  const student=S.students.find(s=>s.id===a.student_id);
+  const eligible=S.schedule.filter(x=>x.teacher_id===teacherId&&groupIds(student||{}).includes(x.group_id)&&String(x.start_time||"").slice(0,5)===hour);
+  return eligible.length===1?eligible[0]:null;
+}
+function teacherWasAbsent(teacherId,groupId,date){
+  const r=S.teacher_sessions.find(x=>x.session_type==="group"&&x.teacher_id===teacherId&&x.group_id===groupId&&x.session_date===date);
+  return !!(r&&!r.taught);
+}
+function teacherAttendanceRows(teacherId,month=today().slice(0,7)){
+  return S.attendance.filter(a=>a.present&&String(a.date||"").startsWith(month))
+    .map(a=>{const sched=scheduleForAttendance(a,teacherId);if(!sched||teacherWasAbsent(teacherId,sched.group_id,a.date))return null;const tc=S.teachers.find(x=>x.id===teacherId);const rate=Number(sched.teacher_rate)||Number(tc?.price_per_session)||0;return{a,sched,rate};}).filter(x=>x&&x.rate>0);
+}
+function teacherAttendancePay(tc,month=today().slice(0,7)){
+  return teacherAttendanceRows(tc.id,month).reduce((sum,r)=>sum+r.rate,0);
+}
+function groupSessionAttendanceCount(session){
+  return S.attendance.filter(a=>a.present&&a.group_id===session.group_id&&a.date===session.session_date&&!!scheduleForAttendance(a,session.teacher_id)).length;
+}
+function groupSessionPay(session){
+  if(!session.taught)return 0;
+  return S.attendance.filter(a=>a.present&&a.group_id===session.group_id&&a.date===session.session_date)
+    .reduce((sum,a)=>{const sched=scheduleForAttendance(a,session.teacher_id);if(!sched)return sum;const rate=Number(sched.teacher_rate)||Number((S.teachers.find(x=>x.id===session.teacher_id)||{}).price_per_session)||0;return sum+rate;},0);
+}
+function tStats(tc){
+  const rows=S.schedule.filter(x=>x.teacher_id===tc.id);
+  const price=Number(tc.price_per_session)||0;
+  return{groups:new Set(rows.map(x=>x.group_id).filter(Boolean)).size,sessions:rows.length,price,week:0,month:teacherAttendancePay(tc)};
+}
+function lastPaid(s){
+  const ds=S.payments.filter(p=>p.student_id===s.id).map(p=>p.paid_on);
+  if(s.paid&&s.paid_on)ds.push(s.paid_on);
+  return ds.sort().pop()||null;
+}
+function overdueList(){
+  return S.students.filter(s=>s.active).map(s=>{const lp=lastPaid(s);return{s,lp,days:daysSince(lp)}})
+   .filter(o=>!o.s.paid||o.lp===null||o.days>OVERDUE_DAYS)
+   .sort((a,b)=>(b.days??1e9)-(a.days??1e9));
+}
+const payList=()=>S.payments.filter(p=>{const s=stu(p.student_id);return(!payGroup||(s||{}).group_id===payGroup)&&hit(Q.payments,full(s),grpName(s),p.note,p.paid_on,p.amount)}).sort((a,b)=>b.paid_on.localeCompare(a.paid_on));
+const attIn=a=>!Rm||a.date.startsWith(Rm);
+function repData(){
+  return S.students.filter(s=>(!Rg||s.group_id===Rg)&&(!Rs||s.id===Rs)&&hit(Q.reports,full(s),grpName(s))).map(s=>{
+    const rs=S.attendance.filter(a=>a.student_id===s.id&&attIn(a));
+    const p=rs.filter(a=>a.present).length;
+    return{s,rs,p,abs:rs.length-p,tot:rs.length,rate:rs.length?Math.round(p/rs.length*100):null};
+  });
+}
+function finData(fm){
+  const received=S.payments.filter(p=>String(p.paid_on||"").startsWith(fm)).reduce((a,p)=>a+(Number(p.amount)||0),0);
+  const ts=S.teachers.map(tc=>{const groupEarned=teacherAttendancePay(tc,fm);const privateEarned=S.teacher_sessions.filter(x=>x.teacher_id===tc.id&&x.session_type==="private"&&x.taught&&String(x.session_date||"").startsWith(fm)).reduce((a,x)=>a+(Number(x.rate)||0),0);return{tc,...tStats(tc),month:groupEarned+privateEarned,groupEarned,privateEarned};});
+  const cost=ts.reduce((a,x)=>a+x.month,0);
+  return{received,cost,profit:received-cost,ts};
+}
+
+/* ---------- exports ---------- */
+const exportStudents=()=>csv("students",[[t("family_name"),t("first_name"),t("dob"),t("phone"),t("group"),t("active"),t("paid"),t("paid_on"),t("subjects")],...stuList().map(s=>[s.family_name,s.first_name,s.dob||"",s.phone||"",grpName(s),s.active?t("active"):t("not_active"),s.paid?t("paid"):t("not_paid"),s.paid_on||"",subjNames(s)])]);
+const exportPayments=()=>csv("payments",[[t("student"),t("group"),t("amount"),t("date"),t("note")],...payList().map(p=>{const s=stu(p.student_id);return[full(s),grpName(s),p.amount,p.paid_on,p.note||""]})]);
+const exportOverdue=()=>csv("overdue",[[t("student"),t("phone"),t("group"),t("last_payment"),t("days_late")],...overdueList().filter(o=>hit(Q.payments,full(o.s),o.s.phone,grpName(o.s))).map(o=>[full(o.s),o.s.phone||"",grpName(o.s),o.lp||t("never_paid"),o.days??""])]);
+const exportTeachers=()=>csv("teachers",[[t("teacher_name"),t("phone"),t("groups_taught"),t("sessions_week"),t("price_session"),t("est_cost_month")],...S.teachers.filter(x=>hit(Q.teachers,x.name,x.phone)).map(x=>{const k=tStats(x);return[x.name,x.phone||"",k.groups,k.sessions,k.price,k.month.toFixed(2)]})]);
+const exportReport=()=>csv("attendance-report",[[t("student"),t("group"),t("report_month"),t("present"),t("absent"),t("total"),t("rate")],...repData().map(r=>[full(r.s),grpName(r.s),Rm||"",r.p,r.abs,r.tot,r.rate==null?"":r.rate+"%"])]);
+function exportFinance(){const fm=Fm||today().slice(0,7),f=finData(fm);csv("finance-"+fm,[[t("report_month"),t("money_received"),t("est_teacher_costs"),t("est_profit")],[fm,f.received,f.cost.toFixed(2),f.profit.toFixed(2)],[],[t("teacher_name"),t("sessions_week"),t("price_session"),t("est_cost_month")],...f.ts.map(x=>[x.tc.name,x.sessions,x.price,x.month.toFixed(2)])])}
+
+/* ---------- screens ---------- */
+const ADMIN_TABS=["dashboard","students","groups","schedule","attendance","sessions","payments","teachers","reports","finance","setup"];
+const TEACHER_TABS=["students","groups","schedule","attendance","sessions","reports"];
+const TABS_NOW=()=>isAdmin?ADMIN_TABS:TEACHER_TABS;
+const svgIcon=(d)=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+const ICONS={sessions:svgIcon("M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"),dashboard:svgIcon("M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9 21v-7h6v7"),students:svgIcon("M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM20 8v6M23 11h-6"),groups:svgIcon("M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM16 3.2a4 4 0 0 1 0 7.6M20 21v-2a4 4 0 0 0-3-3.87"),schedule:svgIcon("M4 5h16v16H4zM8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"),attendance:svgIcon("M9 12l2 2 4-4M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"),payments:svgIcon("M3 6h18v13H3zM3 10h18M7 15h4"),teachers:svgIcon("M12 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM3 21a9 9 0 0 1 18 0M18 4l2 2 3-3"),reports:svgIcon("M4 19V5M4 19h17M8 16v-5M13 16V7M18 16v-8"),finance:svgIcon("M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"),setup:svgIcon("M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.8 3.12-.09-.02a1.7 1.7 0 0 0-1.7.48l-.06.06h-3.6l-.06-.06a1.7 1.7 0 0 0-1.7-.48l-.09.02-1.8-3.12.06-.06A1.7 1.7 0 0 0 9.3 15l-.02-.09v-3.6L9.3 11a1.7 1.7 0 0 0-.34-1.88L8.9 9.06l1.8-3.12.09.02a1.7 1.7 0 0 0 1.7-.48l.06-.06h3.6l.06.06a1.7 1.7 0 0 0 1.7.48l.09-.02 1.8 3.12-.06.06A1.7 1.7 0 0 0 19.4 11l.02.09v3.6Z")};
+function nav(){
+  $("nav").innerHTML=roleReady?TABS_NOW().map(k=>`<button class="${k===tab?"on":""}" onclick="tab='${k}';nav();render()"><span class="ni">${ICONS[k]||"•"}</span><span>${t(k)}</span></button>`).join(""):"";
+  $("pagetitle").textContent=roleReady?t(tab):"";
+}
+
+V.dashboard=()=>{
+  const activeCount=S.students.filter(s=>s.active).length;
+  const todays=S.attendance.filter(a=>a.date===today());
+  const pct=todays.length?Math.round(todays.filter(a=>a.present).length/todays.length*100):0;
+  const totalPaid=S.payments.reduce((a,p)=>a+(Number(p.amount)||0),0);
+  const od=overdueList().length;
+  return{head:"",body:`<div class="admin-welcome"><div><h1>${t("dashboard")}</h1><p>${t("welcome")} · ${esc(SCHOOL_NAME)}</p></div><div class="quick-actions"><button class="pri" onclick="openForm('students')">+ ${t("add_student")}</button><button class="sec" onclick="tab='schedule';nav();render()">+ ${t("add_class")}</button></div></div>
+  <div class="admin-grid">
+   <div class="admin-stat"><span class="ico">👥</span><div class="stat-label">${t("total_students")}</div><div class="stat-value">${S.students.length}</div><div class="mu">${t("students")}</div></div>
+   <div class="admin-stat"><span class="ico">✅</span><div class="stat-label">${t("active_students")}</div><div class="stat-value">${activeCount}</div><div class="mu">${t("active")}</div></div>
+   <div class="admin-stat"><span class="ico">🗂️</span><div class="stat-label">${t("groups_total")}</div><div class="stat-value">${S.groups.length}</div><div class="mu">${t("groups")}</div></div>
+   <div class="admin-stat"><span class="ico">👩‍🏫</span><div class="stat-label">${t("teachers_total")}</div><div class="stat-value">${S.teachers.length}</div><div class="mu">${t("teachers")}</div></div>
+  </div>
+  <div class="admin-lower"><section class="card"><h2 class="admin-panel-title">${t("school_summary")}</h2>
+   <div class="dashboard-list"><span>${t("attendance_today")}</span><strong>${pct}%</strong></div><div class="progress-line"><span style="width:${pct}%"></span></div>
+   <div class="dashboard-list"><span>${t("total_payments")}</span><strong>${money(totalPaid)}</strong></div>
+   <div class="dashboard-list"><span>${t("overdue")}</span><strong class="${od?"bad":""}">${od}</strong></div>
+   <div class="dashboard-list"><span>${t("schedule")}</span><strong>${S.schedule.length}</strong></div>
+   <div class="dashboard-list"><span>${t("subjects_classes")}</span><strong>${S.subjects.length}</strong></div>
+  </section><section class="card"><h2 class="admin-panel-title">${t("quick_actions")}</h2><div class="quick-actions">
+   ${["students","groups","attendance","payments","finance"].map(k=>`<button class="sec" onclick="tab='${k}';nav();render()">${t(k)}</button>`).join("")}
+  </div><h2 class="admin-panel-title" style="margin-top:20px">${t("recent_students")}</h2>
+   ${S.students.slice(0,5).map(s=>`<div class="dashboard-list"><span><strong>${esc(full(s))}</strong><div class="mu">${esc(grpName(s))}</div></span><span class="tag ${s.active?"ok":"bad"}">${t(s.active?"active":"not_active")}</span></div>`).join("")||`<div class="mu">${t("no_students")}</div>`}
+  </section></div>`};
+};
+
+V.students=()=>{
+  const l=stuList();
+  const active=S.students.filter(s=>s.active).length;
+  const assigned=S.students.filter(s=>groupIds(s).length).length;
+  const month=today().slice(0,7);
+  const paidThisMonth=S.payments.filter(p=>String(p.paid_on||"").startsWith(month)).reduce((a,p)=>a+(Number(p.amount)||0),0);
+  return{head:`<div class="admin-welcome"><div><h2 style="margin:0;font-size:21px;letter-spacing:-.03em">Students</h2><p>Keep track of enrolments, classes and payments at a glance.</p></div>${addBtn("students","add_student")}</div>${searchBox()}<div class="row noprint">${tools("exportStudents")}</div>`,
+  body:`<div class="admin-grid"><div class="admin-stat"><div class="stat-label">Total students</div><div class="stat-value">${S.students.length}</div><div class="mu">Across all groups</div></div><div class="admin-stat"><div class="stat-label">Active students</div><div class="stat-value">${active}</div><div class="mu">Currently enrolled</div></div><div class="admin-stat"><div class="stat-label">Assigned to groups</div><div class="stat-value">${assigned}</div><div class="mu">${S.students.length-assigned} without a group</div></div><div class="admin-stat"><div class="stat-label">Payments this month</div><div class="stat-value" style="font-size:23px">${money(paidThisMonth)}</div><div class="mu">Recorded payments</div></div></div><div class="page-summary"><span class="summary-chip">Showing <strong>${l.length}</strong> of ${S.students.length} students</span><span class="summary-chip">Fees are calculated from attendance where available</span></div><div class="card tbl-wrap"><table class="tbl"><thead><tr><th>Student</th><th>Groups</th><th>Subjects</th><th>Monthly fee</th><th>Paid this month</th><th>Balance</th><th>Phone</th><th>Status</th><th>Payment</th><th class="noprint">Actions</th></tr></thead><tbody>${l.map(s=>{const paid=S.payments.filter(p=>p.student_id===s.id&&String(p.paid_on||"").startsWith(month)).reduce((a,p)=>a+(Number(p.amount)||0),0);const due=Math.max(0,(Number(s.monthly_fee)||0)-paid);return `<tr><td><b>${esc(full(s))}</b>${s.dob?`<div class="mu">${t("born")} ${esc(s.dob)}</div>`:""}</td><td>${groupIds(s).map(id=>`<span class="tag">${esc(nm(S.groups,id))}</span>`).join(" ")||"<span class=\"mu\">Unassigned</span>"}</td><td>${esc(subjNames(s)||"—")}</td><td>${money(Number(s.monthly_fee)||0)}</td><td>${money(paid)}</td><td><b>${money(due)}</b></td><td>${tel(s.phone)||"—"}</td><td><span class="tag ${s.active?"ok":"bad"}">${t(s.active?"active":"not_active")}</span></td><td><span class="tag ${paid>0?"ok":""}">${paid>0?"Paid recorded":"No payment"}</span></td><td class="noprint">${eb("students",s.id)}</td></tr>`}).join("")||`<tr><td colspan="10" class="table-empty">${none(S.students.length?"no_results":"no_students")}</td></tr>`}</tbody></table></div>`};
+};
+V.groups=()=>{
+  const selected=S.groups.find(g=>g.id===selectedGroupId);
+  if(selected){
+    const students=S.students.filter(s=>groupIds(s).includes(selected.id)).sort((a,b)=>full(a).localeCompare(full(b)));
+    const classes=S.schedule.filter(x=>x.group_id===selected.id).sort((a,b)=>a.day-b.day||String(a.start_time||"").localeCompare(String(b.start_time||"")));
+    const days=DAYS();
+    return{head:`<div class="row"><button class="sec" onclick="selectedGroupId='';render()">← All groups</button><button class="pri" onclick="openForm('students')">+ Add student to this group</button><button class="sec" onclick="openForm('groups','${selected.id}')">Edit group</button></div>`,body:`<div class="admin-welcome"><div><h2 style="margin:0;font-size:22px">${esc(selected.name)}</h2><p>Group overview, enrolled students and scheduled classes.</p></div><span class="group-count-pill">${students.length} students</span></div><div class="admin-grid"><div class="admin-stat"><div class="stat-label">Students in group</div><div class="stat-value">${students.length}</div><div class="mu">Enrolled in this group</div></div><div class="admin-stat"><div class="stat-label">Active students</div><div class="stat-value">${students.filter(s=>s.active).length}</div><div class="mu">Currently active</div></div><div class="admin-stat"><div class="stat-label">Teachers</div><div class="stat-value" style="font-size:18px">${esc(grpTeachers(selected.id)||"—")}</div><div class="mu">Assigned through schedule</div></div><div class="admin-stat"><div class="stat-label">Scheduled classes</div><div class="stat-value">${classes.length}</div><div class="mu">Classes and subjects</div></div></div><div class="card tbl-wrap"><h3>Students in ${esc(selected.name)} <span class="group-count-pill">${students.length}</span></h3><table class="tbl"><thead><tr><th>Student</th><th>Phone</th><th>Other groups</th><th>Status</th><th class="noprint">Actions</th></tr></thead><tbody>${students.map(s=>`<tr><td><b>${esc(full(s))}</b>${s.dob?`<div class="mu">Born ${esc(s.dob)}</div>`:""}</td><td>${tel(s.phone)||"—"}</td><td>${esc(groupIds(s).filter(id=>id!==selected.id).map(id=>nm(S.groups,id)).filter(x=>x!=="—").join(", ")||"—")}</td><td><span class="tag ${s.active?"ok":"bad"}">${t(s.active?"active":"not_active")}</span></td><td class="noprint">${eb("students",s.id)}</td></tr>`).join("")||`<tr><td colspan="5" class="table-empty">No students assigned to this group yet. Use “Add student” to enrol someone.</td></tr>`}</tbody></table></div><div class="card tbl-wrap"><h3>Classes and subjects</h3><table class="tbl"><thead><tr><th>Day</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Teacher pay/student present</th><th>Student fee/class</th></tr></thead><tbody>${classes.map(x=>`<tr><td>${esc(days[x.day]||"—")}</td><td>${esc(x.start_time||"—")}–${esc(x.end_time||"—")}</td><td>${esc(nm(S.subjects,x.subject_id))}</td><td>${esc(nm(S.teachers,x.teacher_id))}</td><td>${money(x.teacher_rate??(S.teachers.find(q=>q.id===x.teacher_id)||{}).price_per_session??0)}</td><td>${money(x.student_fee||0)}</td></tr>`).join("")||`<tr><td colspan="6" class="table-empty">No classes scheduled for this group yet.</td></tr>`}</tbody></table></div>`};
+  }
+  const l=S.groups.filter(g=>hit(Q.groups,g.name,grpTeachers(g.id),S.students.filter(s=>groupIds(s).includes(g.id)).map(full).join(" ")));
+  const assignedCount=S.students.filter(s=>groupIds(s).length).length;
+  const totalSeats=S.groups.reduce((n,g)=>n+S.students.filter(s=>groupIds(s).includes(g.id)).length,0);
+  return{head:`<div class="admin-welcome"><div><h2 style="margin:0;font-size:21px;letter-spacing:-.03em">Groups</h2><p>Explore each group, check enrolment and open its student list.</p></div>${addBtn("groups","add_group")}</div>${searchBox()}`,
+  body:`<div class="admin-grid"><div class="admin-stat"><div class="stat-label">Total groups</div><div class="stat-value">${S.groups.length}</div><div class="mu">All created groups</div></div><div class="admin-stat"><div class="stat-label">Total students</div><div class="stat-value">${S.students.length}</div><div class="mu">Unique students in the school</div></div><div class="admin-stat"><div class="stat-label">Students assigned</div><div class="stat-value">${assignedCount}</div><div class="mu">Students in at least one group</div></div><div class="admin-stat"><div class="stat-label">Group enrolments</div><div class="stat-value">${totalSeats}</div><div class="mu">Counts multi-group students in each group</div></div></div><div class="page-summary"><span class="summary-chip">Showing <strong>${l.length}</strong> of ${S.groups.length} groups</span></div><div class="card tbl-wrap"><table class="tbl"><thead><tr><th>Group</th><th>Teachers</th><th>Students</th><th>Active</th><th>Classes</th><th class="noprint">Actions</th></tr></thead><tbody>${l.map(g=>{const tn=grpTeachers(g.id);const members=S.students.filter(s=>groupIds(s).includes(g.id));const classCount=S.schedule.filter(x=>x.group_id===g.id).length;return `<tr><td><button class="sec group-name-button" onclick="selectedGroupId='${g.id}';render()"><span>${esc(g.name)}</span><span aria-hidden="true">↗</span></button></td><td>${esc(tn||"—")}</td><td><button class="sec" onclick="selectedGroupId='${g.id}';render()"><span class="group-count-pill">${members.length}</span> View students</button></td><td>${members.filter(s=>s.active).length}</td><td>${classCount}</td><td class="noprint">${eb("groups",g.id)}</td></tr>`}).join("")||`<tr><td colspan="6" class="table-empty">${none(S.groups.length?"no_results":"no_groups")}</td></tr>`}</tbody></table></div>`};
+};
+V.schedule=()=>{
+  const D=DAYS();
+  const l=[...S.schedule].filter(x=>hit(Q.schedule,D[x.day],x.start_time,nm(S.groups,x.group_id),nm(S.subjects,x.subject_id),nm(S.teachers,x.teacher_id))).sort((a,b)=>a.day-b.day||a.start_time.localeCompare(b.start_time));
+  return{head:`${addBtn("schedule","add_class")}${searchBox()}<div class="row noprint"><button class="sec" onclick="printList()">${t("print")}</button></div>`,
+  body:`<div class="card tbl-wrap"><table class="tbl"><thead><tr><th>${t("day")}</th><th>${t("start")}</th><th>${t("end")}</th><th>${t("group")}</th><th>${t("class_subject")}</th><th>${t("teacher")}</th><th>Teacher pay/student present</th><th>Student fee/attended class</th><th class="noprint">Actions</th></tr></thead><tbody>${l.map(x=>`<tr><td>${esc(D[x.day])}</td><td>${esc(x.start_time)}</td><td>${esc(x.end_time||"—")}</td><td>${esc(nm(S.groups,x.group_id))}</td><td>${esc(nm(S.subjects,x.subject_id))}</td><td>${esc(nm(S.teachers,x.teacher_id))}</td><td>${money(x.teacher_rate??nm(S.teachers,x.teacher_id)?.price_per_session??0)}</td><td>${money(x.student_fee||0)}</td><td class="noprint">${eb("schedule",x.id)}</td></tr>`).join("")||`<tr><td colspan="9">${none(S.schedule.length?"no_results":"nothing_sched")}</td></tr>`}</tbody></table></div>`};
+};
+
+V.attendance=()=>{
+  const list=S.students.filter(s=>s.active&&(!attGroup||groupIds(s).includes(attGroup))&&hit(Q.attendance,full(s)));
+  return{head:`<div class="card"><div class="row"><input type="date" value="${attDate}" onchange="attDate=this.value;render()"><input type="time" value="${attHour}" onchange="attHour=this.value;render()"><select onchange="attGroup=this.value;render()"><option value="">${t("all_groups")}</option>${grpOpts(attGroup)}</select></div>${searchBox()}</div>`,
+  body:`<div class="card">${list.map(s=>{const r=S.attendance.find(a=>a.student_id===s.id&&a.date===attDate&&a.hour===attHour&&(!attGroup||a.group_id===attGroup));return `<div class="item"><span><b>${esc(full(s))}</b> <span class="mu">${esc(grpName(s))}</span></span><div class="att-actions"><button class="${r&&r.present?"selected-present":""}" onclick="mark('${s.id}',true,'${attGroup||groupIds(s)[0]||""}')">✓ ${t("present")}</button><button class="${r&&!r.present?"selected-absent":""}" onclick="mark('${s.id}',false,'${attGroup||groupIds(s)[0]||""}')">✕ ${t("absent")}</button></div></div>`}).join("")||none("no_active")}</div><div class="mu">${t("att_hint")}</div>`};
+};
+
+V.payments=()=>{
+  const od=overdueList();
+  const toggle=`<div class="row noprint"><button class="${payView==="all"?"pri":"sec"}" onclick="payView='all';render()">${t("all_payments")}</button><button class="${payView==="overdue"?"pri":"sec"}" onclick="payView='overdue';render()">${t("overdue")} (${od.length})</button></div>`;
+  if(payView==="overdue"){
+    const l=od.filter(o=>hit(Q.payments,full(o.s),o.s.phone,grpName(o.s)));
+    return{head:`${toggle}${searchBox()}<div class="row">${tools("exportOverdue")}</div><div class="mu" style="margin-bottom:8px">${t("overdue_note").replace("{d}",OVERDUE_DAYS)}</div>`,
+    body:`<div class="card">${l.map(o=>`<div class="item"><div><b>${esc(full(o.s))}</b> <span class="tag bad">${o.lp===null?t("never_paid"):o.days+" "+t("days_late")}</span>
+     <div class="mu">${esc(grpName(o.s))}${o.s.phone?" · 📞 "+tel(o.s.phone):""}</div>${o.lp?`<div class="mu">${t("last_payment")}: ${esc(o.lp)}</div>`:""}</div></div>`).join("")||none(od.length?"no_results":"no_overdue")}</div>`};
+  }
+  const l=payList();
+  return{head:`${toggle}${addBtn("payments","add_payment")}<div class="row noprint"><select onchange="payGroup=this.value;render()"><option value="">${t("all_groups")}</option>${grpOpts(payGroup)}</select></div>${searchBox()}<div class="row">${tools("exportPayments")}</div>`,
+  body:`<div class="admin-grid"><div class="admin-stat"><div class="stat-label">${t("total_payments")}</div><div class="stat-value">${money(l.reduce((a,p)=>a+(Number(p.amount)||0),0))}</div></div><div class="admin-stat"><div class="stat-label">Payment records</div><div class="stat-value">${l.length}</div></div><div class="admin-stat"><div class="stat-label">Students who paid</div><div class="stat-value">${new Set(l.map(p=>p.student_id)).size}</div></div></div><div class="card tbl-wrap"><table class="tbl"><thead><tr><th>${t("student")}</th><th>${t("group")}</th><th>${t("amount")}</th><th>${t("date")}</th><th>${t("note")}</th><th class="noprint">Actions</th></tr></thead><tbody>${l.map(p=>{const s=stu(p.student_id);return `<tr><td>${esc(full(s))}</td><td>${esc(grpName(s))}</td><td><b>${money(p.amount)}</b></td><td>${esc(p.paid_on)}</td><td>${esc(p.note||"")}</td><td class="noprint">${eb("payments",p.id)}</td></tr>`}).join("")||`<tr><td colspan="6">${none(S.payments.length?"no_results":"no_payments")}</td></tr>`}</tbody></table></div><div class="card tbl-wrap"><h3>Paid by student</h3><table class="tbl"><thead><tr><th>${t("student")}</th><th>${t("group")}</th><th>Total paid</th></tr></thead><tbody>${S.students.filter(s=>l.some(p=>p.student_id===s.id)).map(s=>`<tr><td>${esc(full(s))}</td><td>${esc(grpName(s))}</td><td><b>${money(l.filter(p=>p.student_id===s.id).reduce((a,p)=>a+(Number(p.amount)||0),0))}</b></td></tr>`).join("")||`<tr><td colspan="3">No paid students in this view</td></tr>`}</tbody></table></div>`};
+};
+
+V.sessions=()=>{
+ const rows=S.teacher_sessions.filter(x=>isAdmin||x.teacher_id===myTeacher).sort((a,b)=>String(b.session_date).localeCompare(String(a.session_date)));
+ const earned=rows.reduce((a,x)=>a+(x.session_type==="group"?groupSessionPay(x):(x.taught?(Number(x.rate)||0):0)),0);
+ return {head:`${addBtn("teacher_sessions","Record session")}<div class="row noprint"><button class="sec" onclick="printList()">${t("print")}</button></div>`,body:`<div class="admin-grid"><div class="admin-stat"><div class="stat-label">Sessions recorded</div><div class="stat-value">${rows.length}</div></div><div class="admin-stat"><div class="stat-label">Sessions taught</div><div class="stat-value">${rows.filter(x=>x.taught).length}</div></div><div class="admin-stat"><div class="stat-label">Teacher earnings (recorded)</div><div class="stat-value">${money(earned)}</div></div></div><div class="card tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Type</th><th>Teacher</th><th>Group / Student</th><th>Attendance</th><th>Pay per student</th><th>Students present / Earned</th><th class="noprint">Actions</th></tr></thead><tbody>${rows.map(x=>{const target=x.session_type==="private"?full(stu(x.student_id)):nm(S.groups,x.group_id);return `<tr><td>${esc(x.session_date||"—")}</td><td>${x.session_type==="private"?"Private":"Group"}</td><td>${esc(nm(S.teachers,x.teacher_id))}</td><td>${esc(target)}</td><td><span class="tag ${x.taught?"ok":"bad"}">${x.taught?"Present / taught":"Absent / not taught"}</span></td><td>${money(x.session_type==="group"?(Number(scheduleForAttendance(S.attendance.find(a=>a.group_id===x.group_id&&a.date===x.session_date&&a.present)||{},x.teacher_id)?.teacher_rate)||Number((S.teachers.find(q=>q.id===x.teacher_id)||{}).price_per_session)||0):x.rate)}</td><td><b>${x.session_type==="group"?`${groupSessionAttendanceCount(x)} students · `:""}${money(x.session_type==="group"?groupSessionPay(x):(x.taught?x.rate:0))}</b></td><td class="noprint">${eb("teacher_sessions",x.id)}</td></tr>`}).join("")||`<tr><td colspan="8">No sessions recorded yet</td></tr>`}</tbody></table></div><p class="mu">Group teacher earnings are calculated as: number of students marked present × the scheduled teacher pay per student. Marking a group session absent makes its group-session earnings zero. Private sessions still use the manually entered rate. Attendance must match the scheduled group and class start time.</p>`};
+};
+
+V.teachers=()=>{
+  const l=S.teachers.filter(x=>hit(Q.teachers,x.name,x.phone,x.login_email));
+  return{head:`${addBtn("teachers","add_teacher")}${searchBox()}<div class="row">${tools("exportTeachers")}</div><p class="mu">Assign groups and subjects through Schedule. Teacher pay is calculated from present students × the class's pay-per-attending-student rate.</p>`,
+  body:`<div class="card tbl-wrap"><table class="tbl"><thead><tr><th>${t("teacher_name")}</th><th>${t("phone")}</th><th>${t("groups_taught")}</th><th>Subjects</th><th>${t("sessions_week")}</th><th>Default pay / student</th><th>Present attendances</th><th>Earned this month</th><th class="noprint">Actions</th></tr></thead><tbody>${l.map(x=>{const k=tStats(x);const assigned=S.schedule.filter(z=>z.teacher_id===x.id);const groups=[...new Set(assigned.map(z=>nm(S.groups,z.group_id)).filter(n=>n!=="—"))].join(", ")||"Not assigned";const subjects=[...new Set(assigned.map(z=>nm(S.subjects,z.subject_id)).filter(n=>n!=="—"))].join(", ")||"—";const attends=teacherAttendanceRows(x.id).length;return `<tr><td><b>${esc(x.name)}</b>${x.login_email?`<div class="mu">${esc(x.login_email)}</div>`:""}</td><td>${tel(x.phone)||"—"}</td><td>${esc(groups)}</td><td>${esc(subjects)}</td><td>${k.sessions}</td><td>${money(k.price)}</td><td>${attends}</td><td><b>${money(teacherAttendancePay(x))}</b></td><td class="noprint"><button class="sec" onclick="assignTeacherClass('${x.id}')">+ Assign group/class</button> ${eb("teachers",x.id)}</td></tr>`}).join("")||`<tr><td colspan="9">${none(S.teachers.length?"no_results":"none_yet")}</td></tr>`}</tbody></table></div>`};
+};
+
+V.reports=()=>{
+  const rows=repData(),one=Rs?rows[0]:null;
+  const studs=S.students.filter(s=>!Rg||s.group_id===Rg);
+  return{head:`<div class="card noprint"><div class="row"><input type="month" value="${Rm}" onchange="Rm=this.value;render()"><select onchange="Rg=this.value;Rs='';render()"><option value="">${t("all_groups")}</option>${grpOpts(Rg)}</select><select onchange="Rs=this.value;render()"><option value="">${t("all_students")}</option>${studs.map(s=>`<option value="${s.id}" ${s.id===Rs?"selected":""}>${esc(full(s))}</option>`).join("")}</select></div>${searchBox()}<div class="row">${tools("exportReport")}</div></div>`,
+  body:`<div class="card scrollx"><table class="tbl"><tr><th>${t("student")}</th><th>${t("group")}</th><th>${t("present")}</th><th>${t("absent")}</th><th>${t("total")}</th><th>${t("rate")}</th></tr>
+   ${rows.map(r=>`<tr><td>${esc(full(r.s))}</td><td>${esc(grpName(r.s))}</td><td class="ok">${r.p}</td><td class="bad">${r.abs}</td><td>${r.tot}</td><td>${r.rate==null?"—":r.rate+"%"}</td></tr>`).join("")||`<tr><td colspan="6">${t("no_results")}</td></tr>`}</table></div>
+   ${one&&one.rs.length?`<div class="card"><b>${esc(full(one.s))}</b>${[...one.rs].sort((a,b)=>(b.date+b.hour).localeCompare(a.date+a.hour)).map(a=>`<div class="item"><span>${esc(a.date)} · ${esc(a.hour)}</span><span class="${a.present?"ok":"bad"}">${t(a.present?"present":"absent")}</span></div>`).join("")}</div>`:""}`};
+};
+
+V.finance=()=>{
+  const fm=Fm||today().slice(0,7),f=finData(fm);
+  return{head:`<div class="card noprint"><div class="row"><input type="month" value="${fm}" onchange="Fm=this.value;render()">${tools("exportFinance")}</div></div>`,
+  body:`<div class="fin-grid">
+   <div class="admin-stat"><span class="ico">💵</span><div class="stat-label">${t("money_received")}</div><div class="stat-value">${money(f.received)}</div></div>
+   <div class="admin-stat"><span class="ico">🧾</span><div class="stat-label">${t("est_teacher_costs")}</div><div class="stat-value">${money(f.cost)}</div></div>
+   <div class="admin-stat"><span class="ico">📈</span><div class="stat-label">${t("est_profit")}</div><div class="stat-value ${f.profit<0?"bad":"ok"}" style="color:var(${f.profit<0?"--bad":"--ok"})">${money(f.profit)}</div></div></div>
+   <div class="card"><b>${t("per_teacher")}</b>${f.ts.map(x=>`<div class="item"><div>${esc(x.tc.name)}<div class="mu">Group attendance: ${money(x.groupEarned||0)} · Private sessions: ${money(x.privateEarned||0)}</div></div><strong>${money(x.month)}</strong></div>`).join("")||none("none_yet")}</div>
+   <div class="mu">Teacher costs are calculated from recorded student attendance × the scheduled teacher pay per attending student. Taught private sessions use their manually entered rate. Profit here is money received minus calculated teacher costs; other expenses are not included.</div><div class="card"><h3>Monthly fee balances · ${esc(fm)}</h3><div class="admin-grid"><div class="admin-stat"><div class="stat-label">Expected monthly fees</div><div class="stat-value">${money(S.students.filter(s=>s.active).reduce((a,s)=>a+(Number(s.monthly_fee)||0),0))}</div></div><div class="admin-stat"><div class="stat-label">Collected this month</div><div class="stat-value">${money(f.received)}</div></div><div class="admin-stat"><div class="stat-label">Outstanding (approx.)</div><div class="stat-value">${money(Math.max(0,S.students.filter(s=>s.active).reduce((a,s)=>a+(Number(s.monthly_fee)||0),0)-f.received))}</div></div></div><div class="mu">Balances are estimates based on each active student’s monthly_fee and payments recorded for the selected month. Other expenses and actual teacher payouts are not included in profit yet.</div></div>`};
+};
+
+V.setup=()=>{
+  const l=S.subjects.filter(x=>hit(Q.setup,x.name));
+  return{head:searchBox(),body:`<div class="card"><b>${t("subjects_classes")}</b><div class="row" style="margin-top:8px"><button class="pri" onclick="openForm('subjects')">+ ${t("add")}</button></div>${l.map(x=>`<div class="item"><span>${esc(x.name)}</span><div>${eb("subjects",x.id)}</div></div>`).join("")||none("none_yet")}</div>`};
+};
+
+function render(){
+  if(!roleReady){$("main").innerHTML="";return}
+  if(!isAdmin&&!myTeacher){$("main").innerHTML=`<div class="card">${t("no_access")}</div>`;return}
+  if(!TABS_NOW().includes(tab))tab=TABS_NOW()[0];
+  const v=V[tab]();
+  $("main").innerHTML=`<div id="printArea"><h2 class="onlyprint">${esc(SCHOOL_NAME)} — ${t(tab)}</h2>`+v.head+`<div id="body">${v.body}</div></div>`;
+}
+const mark=(sid,present,gid="")=>{const payload={student_id:sid,date:attDate,hour:attHour,present};if(gid)payload.group_id=gid;return sb.from("attendance").upsert(payload,{onConflict:gid?"student_id,date,hour,group_id":"student_id,date,hour"}).then(async r=>{if(r.error)alert(r.error.message+"\nIf this is a group-specific attendance record, run the latest Sesame session migration first.");else await load()})};
+
+setLang(lang);
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Service worker registration failed:', err)));
+}
+</script>
+</body></html>
